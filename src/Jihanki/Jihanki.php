@@ -3,17 +3,20 @@ namespace Gilbite\Jihanki;
 
 use Gilbite\Jihanki\Money\AcceptableCashFactory as CashFactory;
 use Gilbite\Jihanki\Stock\Stock;
+use Gilbite\Jihanki\Money\Box;
 use Gilbite\Jihanki\Stock\Item;
 
 class Jihanki
 {
-    protected $acceptedCash = array();
+    protected $acceptedCash = 0;
     protected $stock        = null;
+    protected $cashBox      = null;
     protected $salesHistory = array();
 
-    public function __construct(Stock $stock)
+    public function __construct(Stock $stock, Box $cashBox)
     {
-        $this->stock = new Stock();
+        $this->stock = $stock;
+        $this->cashBox = $cashBox;
     }
 
     /**
@@ -24,7 +27,8 @@ class Jihanki
      */
     public function acceptCash($money)
     {
-        $this->acceptedCash[] = CashFactory::factory($money);
+        $this->getCashBox()->add(CashFactory::factory($money));
+        $this->acceptedCash += $money;
     }
 
     /**
@@ -34,12 +38,7 @@ class Jihanki
      */
     public function getAcceptedCashAmount()
     {
-        $ret = 0;
-        foreach ($this->acceptedCash as $cash) {
-            $ret += $cash->getValue();
-        }
-
-        return $ret;
+        return $this->acceptedCash;
     }
 
     /**
@@ -49,12 +48,17 @@ class Jihanki
      */
     public function clearAcceptedCash()
     {
-        $this->acceptedCash = array();
+        $this->acceptedCash = 0;
     }
 
     public function getStock()
     {
         return $this->stock;
+    }
+
+    public function getCashBox()
+    {
+        return $this->cashBox;
     }
 
     /**
@@ -69,7 +73,10 @@ class Jihanki
         $ret = array();
         foreach ($this->getStock()->getIdsInStock() as $id) {
             if ($this->getStock()->getItem($id)->getPrice() <= $this->getAcceptedCashAmount() ) {
-                $ret[] = $id;
+                $change = $this->getAcceptedCashAmount() - $this->getStock()->getItem($id)->getPrice();
+                if ($this->getCashBox()->isChangeAvailable($change)) {
+                    $ret[] = $id;
+                }
             }
         }
         sort($ret);
@@ -84,11 +91,19 @@ class Jihanki
         }
 
         $this->getStock()->reduce($id);
+        $this->acceptedCash -= $this->getStock()->getItem($id)->getPrice();
+
         $this->salesHistory[] = array(
             'id'   => $id,
             'name' => $this->getStock()->getItem($id)->getName(),
             'sold' => $this->getStock()->getItem($id)->getPrice(),
         );
+    }
+
+    public function payoutChange()
+    {
+        $change = $this->getCashBox()->payoutChange($this->getAcceptedCashAmount());
+        return $change;
     }
 
     public function getSalesHistory()

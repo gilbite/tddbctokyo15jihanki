@@ -4,6 +4,8 @@ namespace Gilbite\Jihanki\Money;
 
 class AcceptableCashFactory
 {
+    static $instances = array();
+
     private function __construct($money)
     {
     }
@@ -27,7 +29,7 @@ class AcceptableCashFactory
             throw new UnacceptableCashException();
         }
 
-        return new Cash($money);
+        return isset(self::$instances[$money]) ? self::$instances[$money] : self::$instances[$money] = new Cash($money);
     }
 
     /**
