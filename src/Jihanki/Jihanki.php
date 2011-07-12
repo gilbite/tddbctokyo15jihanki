@@ -79,6 +79,10 @@ class Jihanki
 
     public function sell($id)
     {
+        if (!in_array($id, $this->getAvailableList(), true)) {
+            throw new \RuntimeException('stock is 0 or cash is short');
+        }
+
         $this->getStock()->reduce($id);
         $this->salesHistory[] = array(
             'id'   => $id,

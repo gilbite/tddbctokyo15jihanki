@@ -55,6 +55,16 @@ class JihankiTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array(1,2), $this->jihanki->getAvailableList());
     }
 
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testSellException()
+    {
+        $this->jihanki->getStock()->add(1, new Item('Coke', 120), 5);
+        $this->jihanki->acceptCash(100);
+        $this->jihanki->sell(1);
+    }
+
     public function testSalesHistory()
     {
         $this->jihanki->getStock()->add(1, new Item('Coke', 120), 5);
