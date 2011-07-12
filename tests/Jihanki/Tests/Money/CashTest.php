@@ -16,7 +16,7 @@ class CashTest extends \PHPUnit_Framework_TestCase
     public function testAvailable($money)
     {
         try {
-            $money = new Cash($money);
+            $money = Cash::getInstance($money);
             return '';
         } catch (InvalidCashException $e){
             $this->fail('invalid money');
@@ -47,7 +47,7 @@ class CashTest extends \PHPUnit_Framework_TestCase
      */
     public function testNonAvailabe($money)
     {
-        $money = new Cash($money);
+        $money = Cash::getInstance($money);
     }
 
     public function provideNonAvailable()
@@ -59,33 +59,4 @@ class CashTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * testIsCoin 
-     * 
-     * @dataProvider provideIsCoin
-     */
-    public function testIsCoin($money, $expected)
-    {
-        $cash = new Cash($money);
-        $this->assertSame($expected, $cash->isCoin());
-    }
-
-    public function provideIsCoin()
-    {
-        return array(
-            array(1, true),
-            array(5, true),
-            array(10, true),
-            array(50, true),
-            array(100, true),
-            array(500, true),
-            array(1000, false),
-            array(2000, false),
-            array(5000, false),
-            array(10000, false),
-        );
-    }
-
-
-    
 }

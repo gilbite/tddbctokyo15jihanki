@@ -4,6 +4,7 @@ namespace Gilbite\Jihanki\Money;
 
 class Cash
 {
+    protected static $instances = array();
     protected $value = 0;
 
     /**
@@ -30,13 +31,18 @@ class Cash
         return array(1000, 2000, 5000, 10000);
     }
 
+    public static function getInstance($money)
+    {
+        return isset(self::$instances[$money]) ? self::$instances[$money] : self::$instances[$money] = new self($money);
+    }
+
     /**
      * constructor
      *
      * @param int $money 
      * @throws InvalidCashException
      */
-    public function __construct($money)
+    private function __construct($money)
     {
         if (!in_array($money, array_merge( self::getAvailableCoins(), self::getAvailableLettuces() ), true)) {
             throw new InvalidCashException();
@@ -44,15 +50,9 @@ class Cash
         $this->value = $money;
     }
 
-    /**
-     * isCoin 
-     * 
-     * @access public
-     * @return boolean
-     */
-    public function isCoin()
+    public function __clone()
     {
-        return in_array($this->value, self::getAvailableCoins(), true);
+        throw new \Exception('cloning is prohibited');
     }
 
     /**
