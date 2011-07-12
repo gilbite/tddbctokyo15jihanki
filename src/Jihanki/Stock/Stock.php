@@ -72,6 +72,26 @@ class Stock
         return array_keys($this->item);
     }
 
+
+    /**
+     * getIdsInStock 
+     * 
+     * @access public
+     * @return array list of int
+     */
+    public function getIdsInStock()
+    {
+        $ret = array();
+        foreach ($this->amount as $id => $amount) {
+            if ($amount > 0) {
+                $ret[] = $id;
+            }
+        }
+        sort($ret);
+
+        return $ret;
+    }
+
     protected function checkId($id)
     {
         if (!isset($this->item[$id])) {

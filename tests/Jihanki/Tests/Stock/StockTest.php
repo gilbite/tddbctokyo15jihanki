@@ -65,4 +65,17 @@ class StockTest extends \PHPUnit_Framework_TestCase
         } catch (\RuntimeException $e){
         }
     }
+
+    public function testGetIdsInStock()
+    {
+        $coke = new Item('Coke', 120);
+        $this->stock->add(1, $coke, 5);
+        $pepsi = new Item('Pepsi', 120);
+        $this->stock->add(2, $pepsi, 1);
+
+        $this->assertEquals(array(1,2), $this->stock->getIdsInStock());
+
+        $this->stock->reduce(2);
+        $this->assertEquals(array(1), $this->stock->getIdsInStock());
+    }
 }

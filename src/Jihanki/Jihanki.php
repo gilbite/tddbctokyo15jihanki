@@ -67,10 +67,8 @@ class Jihanki
     public function getAvailableList()
     {
         $ret = array();
-        foreach ($this->getStock()->getIds() as $id) {
-            if ($this->getStock()->getItem($id)->getPrice() <= $this->getAcceptedCashAmount() 
-                && $this->getStock()->getAmount($id) > 0
-            ) {
+        foreach ($this->getStock()->getIdsInStock() as $id) {
+            if ($this->getStock()->getItem($id)->getPrice() <= $this->getAcceptedCashAmount() ) {
                 $ret[] = $id;
             }
         }
