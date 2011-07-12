@@ -95,4 +95,23 @@ class Jihanki
     {
         return $this->salesHistory;
     }
+
+    public function getSales($id = null)
+    {
+        $ret = array();
+        foreach ($this->getSalesHistory() as $raw) {
+            $_id = $raw['id'];
+            if (!isset($ret[$_id])) {
+                $ret[$_id] = 0;
+            }
+            $ret[$_id] += $raw['sold'];
+        }
+
+        if (null === $id) {
+            return array_sum($ret);
+        } else {
+            return isset($ret[$id]) ? $ret[$id] : 0;
+        }
+
+    }
 }

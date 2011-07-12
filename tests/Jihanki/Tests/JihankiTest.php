@@ -81,6 +81,9 @@ class JihankiTest extends \PHPUnit_Framework_TestCase
             array('id' => 1, 'name' => 'Coke', 'sold' => 120),
         ), $this->jihanki->getSalesHistory());
 
+        $this->assertEquals(240, $this->jihanki->getSales(1));
+        $this->assertEquals(150, $this->jihanki->getSales(2));
+        $this->assertEquals(390, $this->jihanki->getSales());
     }
 
 }
