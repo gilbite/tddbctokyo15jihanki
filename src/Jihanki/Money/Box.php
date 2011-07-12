@@ -85,13 +85,9 @@ class Box
                 if (!isset($change[$cash])) {
                     $change[$cash] = 0;
                 }
-                if ($change[$cash] < $this->getMaxOutPerCash($cash)) {
-                    $change[$cash] += 1;
-                    $result[$cash] -= 1;
-                    $money -= $cash->getValue();
-                } else {
-                    break;
-                }
+                $change[$cash] += 1;
+                $result[$cash] -= 1;
+                $money -= $cash->getValue();
 
                 if (0 === $money) {
                     return $change;
@@ -104,20 +100,6 @@ class Box
         return false;
     }
 
-
-    public function getMaxOutPerCash(Cash $cash)
-    {
-        $unit =  pow(10, strlen((string )$cash->getValue()));
-        $quotient = (int )$unit / (int )$cash->getValue();
-
-        if (0 === $unit % $cash->getValue()) {
-            return $quotient - 1;
-        } else {
-            return $quotient;
-        }
-        
-    }
-
     public function isChangeAvailable($money)
     {
         return (bool ) $this->calcChange($money);
@@ -125,7 +107,9 @@ class Box
 
     public function payoutChange($money)
     {
-        $change = $this->calcChange($money);
+        if(false === $change = $this->calcChange($money)){
+            throw new \InvalidArgumentException("cannot payout change");
+        }
 
         foreach ($change as $cash) {
             $this->reduce($cash, $change[$cash]);

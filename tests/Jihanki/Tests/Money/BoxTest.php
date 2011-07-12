@@ -58,32 +58,10 @@ class BoxTest extends \PHPUnit_Framework_TestCase
             array(
                 array(10 => 38, 500 => 1),
                 880,
-                false
+                true
             ),
         );
     }
-
-    /**
-     * @dataProvider provideMaxOutCondition
-     */
-    public function testGetMaxOutPerCash(Cash $cash, $maxOut)
-    {
-        $this->assertEquals($maxOut, $this->box->getMaxOutPerCash($cash));
-    }
-
-    public function provideMaxOutCondition()
-    {
-        return array(
-            array(new Cash(10), 9),
-            array(new Cash(50), 1),
-            array(new Cash(100), 9),
-            array(new Cash(500), 1),
-            array(new Cash(1000), 9),
-            array(new Cash(2000), 4),
-            array(new Cash(10000), 9),
-        );
-    }
-
 
     public function testPayoutChange()
     {

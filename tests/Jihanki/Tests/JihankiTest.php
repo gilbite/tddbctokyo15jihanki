@@ -132,4 +132,26 @@ class JihankiTest extends \PHPUnit_Framework_TestCase
         $this->jihanki->acceptCash(100);
         $this->assertEquals(array(2), $this->jihanki->getAvailableList());
     }
+
+    public function testMakeSurePayoutChanges()
+    {
+        $this->jihanki->getCashBox()->reset();
+        $this->jihanki->getStock()->add(1, new Item('Coke', 120), 5);
+
+        // 1000 = 100x10 
+        $this->jihanki->acceptCash(100);
+        $this->jihanki->acceptCash(100);
+        $this->jihanki->acceptCash(100);
+        $this->jihanki->acceptCash(100);
+        $this->jihanki->acceptCash(100);
+        $this->jihanki->acceptCash(100);
+        $this->jihanki->acceptCash(100);
+        $this->jihanki->acceptCash(100);
+        $this->jihanki->acceptCash(100);
+        $this->jihanki->acceptCash(100);
+
+        $expect = new \SplObjectStorage();
+        $expect[CashFactory::factory(100)] = 10;
+        $this->assertEquals($expect, $this->jihanki->payoutChange());
+    }
 }
