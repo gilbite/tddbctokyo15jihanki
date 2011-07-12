@@ -117,6 +117,7 @@ class JihankiTest extends \PHPUnit_Framework_TestCase
         $expect[CashFactory::factory(100)] = 1;
         $expect[CashFactory::factory(10)] = 1;
         $this->assertEquals($expect, $this->jihanki->payoutChange());
+        $this->assertEquals(0, $this->jihanki->getAcceptedCashAmount());
 
     }
 

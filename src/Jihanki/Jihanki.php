@@ -103,6 +103,7 @@ class Jihanki
     public function payoutChange()
     {
         $change = $this->getCashBox()->payoutChange($this->getAcceptedCashAmount());
+        $this->clearAcceptedCash();
         return $change;
     }
 
